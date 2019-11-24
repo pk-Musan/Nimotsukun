@@ -20,7 +20,7 @@ enum Object {
     OBJ_UNKNOWN
 };
 
-void init(Object *stage, int width, int height, const char *stageData) {
+void init(Object *state, int width, int height, const char *stageData) {
     int x = 0, y = 0;
     const char *data = stageData;
     while ( *data != '\0' ) {
@@ -44,7 +44,7 @@ void init(Object *stage, int width, int height, const char *stageData) {
         data++;
 
         if (t != OBJ_UNKNOWN) {
-            stage[y*width + x] = t;
+            state[y*width + x] = t;
             x++;
         }
     }
@@ -58,8 +58,16 @@ void update() {
 
 }
 
-void draw() {
+void draw(Object *state, int width, int height) {
+    const char font[] = {' ', '#', '.', 'o', 'O', 'p', 'P'};
 
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            Object o = state[y*width + x];
+            std::cout << font[o];
+        }
+        std::cout << std::endl;
+    }
 }
 
 int main() {
@@ -76,7 +84,7 @@ int main() {
 
         update();
 
-        draw();
+        draw(stage, gStageWidth, gStateHeight);
     }
 
     return 0;
