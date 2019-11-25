@@ -1,13 +1,10 @@
 #include <iostream>
+#include <fstream>
 
-const int gStageWidth = 8;
-const int gStateHeight = 5;
-const char gStageData[] = "\
-########\n\
-# .. p #\n\
-# oo   #\n\
-#      #\n\
-########";
+int gStageWidth = 0;
+int gStateHeight = 0;
+std::string gStageData;
+const std::string gStageDataPath = "stageData.txt";
 
 enum Object {
     OBJ_SPACE,
@@ -20,13 +17,26 @@ enum Object {
     OBJ_UNKNOWN
 };
 
-void init(Object *state, int width, int height, const char *stageData) {
-    int x = 0, y = 0;
-    const char *data = stageData;
-    while ( *data != '\0' ) {
+void readFileImage(const std::string dataPath) {
+    std::ifstream inputFile(dataPath, std::ifstream::binary);
+
+    std::string str;
+    getline(inputFile, str);
+    if ( !str.empty() ) gStageWidth = str.length();
+
+    inputFile.seekg(0, std::ifstream::beg);
+    while (getline(inputFile, str)) {
+        gStageData += str;
+        gStateHeight++;
+    }
+}
+
+void init(Object *state, const std::string stageData) {
+    int i = 0;
+    while (stageData[i] != '\0') {
         Object t;
 
-        switch (*data) {
+        switch (stageData[i]) {
             case '#': t = OBJ_WALL; break;
             case ' ': t = OBJ_SPACE; break;
             case 'o': t = OBJ_BLOCK; break;
@@ -34,19 +44,13 @@ void init(Object *state, int width, int height, const char *stageData) {
             case '.': t = OBJ_GOAL; break;
             case 'p': t = OBJ_MAN; break;
             case 'P': t = OBJ_MAN_ON_GOAL; break;
-            case '\n':
-                x = 0;
-                y++;
-                t = OBJ_UNKNOWN;
-                break;
             default: t = OBJ_UNKNOWN; break;
         }
-        data++;
 
         if (t != OBJ_UNKNOWN) {
-            state[y*width + x] = t;
-            x++;
+            state[i] = t;
         }
+        i++;
     }
 }
 
@@ -132,8 +136,10 @@ void draw(Object *state, int width, int height) {
 }
 
 int main() {
+    readFileImage(gStageDataPath);
+    
     Object *state = new Object[ gStageWidth * gStateHeight ];
-    init(state, gStageWidth, gStateHeight, gStageData);
+    init(state, gStageData);
     draw(state, gStageWidth, gStateHeight);
 
     while (true) {
@@ -147,5 +153,6 @@ int main() {
     }
 
     delete[] state;
+    
     return 0;
 }
