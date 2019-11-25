@@ -110,7 +110,7 @@ void update(Object *state, char input, int width, int height) {
         }
     }
 }
-/*
+
 bool checkClear(Object *state, int width, int height) {
     for (int i = 0; i < width*height; i++) {
         if (state[i] == OBJ_BLOCK) return false;
@@ -118,7 +118,7 @@ bool checkClear(Object *state, int width, int height) {
 
     return true;
 }
-*/
+
 void draw(Object *state, int width, int height) {
     const char font[] = {' ', '#', '.', 'o', 'O', 'p', 'P'};
 
@@ -135,14 +135,9 @@ int main() {
     Object *state = new Object[ gStageWidth * gStateHeight ];
     init(state, gStageWidth, gStateHeight, gStageData);
     draw(state, gStageWidth, gStateHeight);
-    /*
-    for (int i = 0; i < gStageWidth*gStateHeight; i++) {
-        std::cout << stage[i] << " ";
-        if (i % 8 == 7) std::cout << std::endl;
-    }
-    */
+
     while (true) {
-        //if (checkClear(state, gStageWidth, gStateHeight)) break;
+        if (checkClear(state, gStageWidth, gStateHeight)) break;
         
         char input = getInput();
 
