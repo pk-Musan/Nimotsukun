@@ -50,6 +50,18 @@ void init(Object *state, int width, int height, const char *stageData) {
     }
 }
 
+char getInput() {
+    std::cout
+        << "a: left, d: right, w: up, s: down."
+        << std::endl
+        << "press your command: ";
+    std::string input;
+    getline(std::cin, input);
+
+    if (input.length() != 1) return '\0';
+    else return *input.c_str();
+}
+
 void update(Object *state, char input, int width, int height) {
     int dx = 0;
     int dy = 0;
@@ -60,6 +72,7 @@ void update(Object *state, char input, int width, int height) {
         case 'd': dx = 1; break;
         case 'w': dy = -1; break;
         case 's': dy = 1; break;
+        default: break;
     }
 
     for (int i = 0; i < width*height; i++) {
@@ -130,15 +143,10 @@ int main() {
     */
     while (true) {
         //if (checkClear(state, gStageWidth, gStateHeight)) break;
-        /*
-        std::cout
-            << "a: left, d: right, w: up, s: down."
-            << std::endl
-            << "press your command: ";
-        char input;
-        std::cin >> input;
-        */
-        //update(state, input, gStageWidth, gStateHeight);
+        
+        char input = getInput();
+
+        update(state, input, gStageWidth, gStateHeight);
 
         draw(state, gStageWidth, gStateHeight);
     }
